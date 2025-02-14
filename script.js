@@ -111,26 +111,25 @@ class ShoppingCart {
   addItem(id, products) {
     const product = products.find((item) => item.id === id);
     const { name, price } = product;
-    this.items.push(product);
 
-    const totalCountPerProduct = {};
-    this.items.forEach((dessert) => {
-      totalCountPerProduct[dessert.id] = (totalCountPerProduct[dessert.id] || 0) + 1;
-    })
+    let existingProduct = this.items.find((item) => item.id === id);
 
-    const currentProductCount = totalCountPerProduct[product.id];
-    const currentProductCountSpan = document.getElementById(`product-count-for-id${id}`);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+        document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
+    }else {
+        product.quantity = 1;
+        this.items.push(product);
 
-    currentProductCount > 1 
-      ? currentProductCountSpan.textContent = `${currentProductCount}x`
-      : productsContainer.innerHTML += `
-      <div id="dessert${id}" class="product">
-        <p>
-          <span class="product-count" id="product-count-for-id${id}"></span>${name}
-        </p>
-        <p>${price}</p>
-      </div>
-      `;
+        productsContainer.innerHTML += `
+        <div id="dessert${id}" class="product">
+          <p>
+            <span class="product-count" id="product-count-for-id${id}"></span>${name}
+          </p>
+          <p>${price}</p>
+        </div>
+        `
+    }
   }
 
   getCounts(){
