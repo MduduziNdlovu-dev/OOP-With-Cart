@@ -2,7 +2,7 @@
 
 ![alt text](image.png)
 
-## Demo link: 
+## Demo link:  https://mduduzindlovu-dev.github.io/OOP-With-Cart/
 
 Welcome to the **Dessert Shopping Cart** – a cutting-edge web app where your sweet tooth meets epic gaming flair! This project is more than just a shopping cart; it’s a testament to my journey of mastering object-oriented programming (OOP) and modern front-end technologies. Designed with passion and crafted with care, this application is built using HTML, CSS, and JavaScript, and it’s packed with features that make dessert shopping a high-score challenge.
 
