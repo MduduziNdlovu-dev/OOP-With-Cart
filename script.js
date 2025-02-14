@@ -65,6 +65,16 @@ async function generateProductCards() {
 
 generateProductCards();
 
+function showToast(message){
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000)
+}
+
 class ShoppingCart {
   constructor() {
     this.items = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -83,9 +93,11 @@ class ShoppingCart {
     if (existingProduct.quantity > 1) {
       existingProduct.quantity -= 1;
       document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
+      showToast(`${existingProduct.name} quantity updated in cart!`);
     } else {
       this.items = this.items.filter((item) => item.id !== id);
       document.getElementById(`dessert${id}`).remove();
+      showToast(`${existingProduct.name} removed from cart!`);
     }
 
     this.saveCart();
@@ -102,6 +114,7 @@ class ShoppingCart {
     if (existingProduct) {
       existingProduct.quantity += 1;
       document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
+      showToast(`${name} quantity updated in cart!`);
     } else {
       const newProduct = { ...product, quantity: 1 };
       this.items.push(newProduct);
@@ -114,9 +127,7 @@ class ShoppingCart {
       </div>
       `;
 
-      document.querySelector(`#dessert${id} .remove-item-btn`).addEventListener("click", (event) => {
-        this.removeItem(Number(event.target.dataset.id));
-      });
+      showToast(`${name} added to cart!`);
     }
 
     this.saveCart();
@@ -186,6 +197,13 @@ const cart = new ShoppingCart();
 clearCartBtn.addEventListener("click", () => cart.clearCart());
 
 cart.restoreCartUI();
+
+productsContainer.addEventListener("click", (event) => {
+    if (event.target && event.target.classList.contains("remove-item-btn")) {
+      const productId = Number(event.target.dataset.id);
+      cart.removeItem(productId);
+    }
+  });
 
 cartBtn.addEventListener("click", () => {
     isCartShowing = !isCartShowing;
