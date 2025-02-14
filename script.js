@@ -108,6 +108,25 @@ class ShoppingCart {
     this.taxRate = 8.25;
   }
 
+  removeItem(id) {
+    let existingProduct = this.items.find((item) => item.id === id);
+
+    if (!existingProduct) return; // Item not in cart
+
+    if (existingProduct.quantity > 1) {
+        existingProduct.quantity -= 1;
+        document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
+    } else {
+        // Remove product completely
+        this.items = this.items.filter((item) => item.id !== id);
+        document.getElementById(`dessert${id}`).remove();
+    }
+
+    // Update total count and price
+    totalNumberOfItems.textContent = this.getCounts();
+    this.calculateTotal();
+}
+
   addItem(id, products) {
     const product = products.find((item) => item.id === id);
     const { name, price } = product;
@@ -118,18 +137,26 @@ class ShoppingCart {
         existingProduct.quantity += 1;
         document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
     }else {
-        product.quantity = 1;
-        this.items.push(product);
+        const newProduct = { ...product, quantity: 1 };
+        this.items.push(newProduct);
 
         productsContainer.innerHTML += `
         <div id="dessert${id}" class="product">
           <p>
-            <span class="product-count" id="product-count-for-id${id}"></span>${name}
+            <span class="product-count" id="product-count-for-id${id}">1x</span> ${name}
           </p>
-          <p>${price}</p>
+          <p>$${price}</p>
+          <button class="btn remove-item-btn" data-id="${id}">Remove</button>
         </div>
-        `
+        `;
+
+        document.querySelector(`#dessert${id} .remove-item-btn`).addEventListener("click", (event) => {
+            this.removeItem(Number(event.target.dataset.id));
+        });
     }
+
+    totalNumberOfItems.textContent = this.getCounts();
+    this.calculateTotal();
   }
 
   getCounts(){
