@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shopping Cart</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -12,7 +17,6 @@
       <h1 class="title">Desserts Page</h1>
       <div id="toast" class="toast"></div>
     </header>
-    
 
     <main>
       <button id="cart-btn" type="button" class="btn">
@@ -21,13 +25,32 @@
       <div id="cart-container">
         <button class="btn" id="clear-cart-btn">Clear Cart</button>
         <div id="products-container"></div>
+        <!-- Discount Code Section -->
+        <div id="discount-container">
+
+          <input
+            type="text"
+            id="discount-code"
+            placeholder="Enter discount code"
+          />
+          <button class="btn" id="apply-discount-btn">Apply Discount</button>
+        </div>
         <p>Total number of items: <span id="total-items">0</span></p>
-        <p>Subtotal: <span id="subtotal">$0</span></p>
-        <p>Taxes: <span id="taxes">$0</span></p>
-        <p>Total: <span id="total">$0</span></p>
+        <p>Subtotal: <span id="subtotal">$0.00</span></p>
+        <p>Taxes: <span id="taxes">$0.00</span></p>
+        <p>Total: <span id="total">$0.00</span></p>
+        <br/>
+        <div>
+          Test codes are: <strong>SUMMER10 for 10%,</strong> and <strong>WELCOME15 for 15%</strong>.
+        </div>
       </div>
       <div id="dessert-card-container"></div>
     </main>
+
+    <footer>
+      <p>Made with ❤️ by [Your Name].</p>
+    </footer>
+
     <script src="./script.js"></script>
   </body>
 </html>

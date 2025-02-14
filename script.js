@@ -8,6 +8,8 @@ const cartSubTotal = document.getElementById("subtotal");
 const cartTaxes = document.getElementById("taxes");
 const cartTotal = document.getElementById("total");
 const showHideCartSpan = document.getElementById("show-hide-cart");
+const discountCodeInput = document.getElementById("discount-code");
+const applyDiscountBtn = document.getElementById("apply-discount-btn");
 let isCartShowing = false;
 
 const API_KEY = "bWoxJ9UM-DGVp28hCqLtCGBce8JSW1I7MoRlrlJuco8";
@@ -29,7 +31,10 @@ const products = [
 
 async function fetchProductImage(query) {
   try {
-    const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&client_id=${API_KEY}&per_page=1`);
+    const response = await fetch(
+      `https://api.unsplash.com/search/photos?query=${query}&client_id=${API_KEY}&per_page=1`
+    );
+    if (!response.ok) throw new Error("Image fetch failed");
     const data = await response.json();
     return data.results.length > 0 ? data.results[0].urls.small : "placeholder.jpg";
   } catch (error) {
@@ -43,7 +48,7 @@ async function generateProductCards() {
     const imageUrl = await fetchProductImage(name);
     dessertCards.innerHTML += `
       <div class="dessert-card">
-        <img src="${imageUrl}" alt="${name}" class="dessert-image">
+        <img src="${imageUrl}" alt="${name}" class="dessert-image" />
         <h2>${name}</h2>
         <p class="dessert-price">$${price}</p>
         <p class="product-category">Category: ${category}</p>
@@ -51,28 +56,52 @@ async function generateProductCards() {
       </div>
     `;
   }
-
   const addToCartBtns = document.getElementsByClassName("add-to-cart-btn");
-
-[...addToCartBtns].forEach((btn) => {
-  btn.addEventListener("click", (event) => {
-    cart.addItem(Number(event.target.id), products);
-    totalNumberOfItems.textContent = cart.getCounts();
-    cart.calculateTotal();
+  [...addToCartBtns].forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      cart.addItem(Number(event.target.id), products);
+      totalNumberOfItems.textContent = cart.getCounts();
+      cart.calculateTotal();
+    });
   });
-});
 }
 
 generateProductCards();
 
-function showToast(message){
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
+// Discount Codes
+const discountCodes = {
+  "SUMMER10": 10,   // 10% discount
+  "WELCOME15": 15,  // 15% discount
+};
 
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 3000)
+function applyDiscount(code) {
+  const discountPercentage = discountCodes[code.toUpperCase()];
+  if (discountPercentage) {
+    const discountAmount = (cart.total * discountPercentage) / 100;
+    const discountedTotal = cart.total - discountAmount;
+    cartTotal.textContent = `$${discountedTotal.toFixed(2)}`;
+    showToast(`Discount Applied: ${discountPercentage}% off!`);
+  } else {
+    alert("Invalid discount code.");
+  }
+}
+
+applyDiscountBtn.addEventListener("click", () => {
+  const code = discountCodeInput.value.trim();
+  if (code) {
+    applyDiscount(code);
+  } else {
+    alert("Please enter a discount code.");
+  }
+});
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
 }
 
 class ShoppingCart {
@@ -89,7 +118,6 @@ class ShoppingCart {
   removeItem(id) {
     let existingProduct = this.items.find((item) => item.id === id);
     if (!existingProduct) return;
-
     if (existingProduct.quantity > 1) {
       existingProduct.quantity -= 1;
       document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
@@ -99,7 +127,6 @@ class ShoppingCart {
       document.getElementById(`dessert${id}`).remove();
       showToast(`${existingProduct.name} removed from cart!`);
     }
-
     this.saveCart();
     totalNumberOfItems.textContent = this.getCounts();
     this.calculateTotal();
@@ -108,9 +135,7 @@ class ShoppingCart {
   addItem(id, products) {
     const product = products.find((item) => item.id === id);
     const { name, price } = product;
-
     let existingProduct = this.items.find((item) => item.id === id);
-
     if (existingProduct) {
       existingProduct.quantity += 1;
       document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
@@ -118,7 +143,6 @@ class ShoppingCart {
     } else {
       const newProduct = { ...product, quantity: 1 };
       this.items.push(newProduct);
-
       productsContainer.innerHTML += `
       <div id="dessert${id}" class="product">
         <p><span class="product-count" id="product-count-for-id${id}">1x</span> ${name}</p>
@@ -126,10 +150,13 @@ class ShoppingCart {
         <button class="btn remove-item-btn" data-id="${id}">Remove</button>
       </div>
       `;
-
       showToast(`${name} added to cart!`);
+      document
+        .querySelector(`#dessert${id} .remove-item-btn`)
+        .addEventListener("click", (event) => {
+          this.removeItem(Number(event.target.dataset.id));
+        });
     }
-
     this.saveCart();
     totalNumberOfItems.textContent = this.getCounts();
     this.calculateTotal();
@@ -169,6 +196,7 @@ class ShoppingCart {
     cartTaxes.textContent = `$${tax.toFixed(2)}`;
     cartTotal.textContent = `$${this.total.toFixed(2)}`;
   }
+
   restoreCartUI() {
     this.items.forEach(({ id, name, price, quantity }) => {
       productsContainer.innerHTML += `
@@ -178,12 +206,12 @@ class ShoppingCart {
         <button class="btn remove-item-btn" data-id="${id}">Remove</button>
       </div>
       `;
-
-      document.querySelector(`#dessert${id} .remove-item-btn`).addEventListener("click", (event) => {
-        this.removeItem(Number(event.target.dataset.id));
-      });
+      document
+        .querySelector(`#dessert${id} .remove-item-btn`)
+        .addEventListener("click", (event) => {
+          this.removeItem(Number(event.target.dataset.id));
+        });
     });
-
     totalNumberOfItems.textContent = this.getCounts();
     this.calculateTotal();
   }
@@ -191,23 +219,17 @@ class ShoppingCart {
 
 const cart = new ShoppingCart();
 clearCartBtn.addEventListener("click", () => cart.clearCart());
-
 cart.restoreCartUI();
 
 productsContainer.addEventListener("click", (event) => {
-    if (event.target && event.target.classList.contains("remove-item-btn")) {
-      const productId = Number(event.target.dataset.id);
-      cart.removeItem(productId);
-    }
-  });
-
-cartBtn.addEventListener("click", () => {
-    isCartShowing = !isCartShowing;
-    showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
-    cartContainer.style.display = isCartShowing ? "block" : "none";
+  if (event.target && event.target.classList.contains("remove-item-btn")) {
+    const productId = Number(event.target.dataset.id);
+    cart.removeItem(productId);
+  }
 });
 
-
-
-
-
+cartBtn.addEventListener("click", () => {
+  isCartShowing = !isCartShowing;
+  showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
+  cartContainer.style.display = isCartShowing ? "block" : "none";
+});

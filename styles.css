@@ -1,7 +1,5 @@
-
-*,
-*::before,
-*::after {
+/* Global Styles */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -18,125 +16,161 @@
   --gold: #feac32;
   --orange: #ffac33;
   --dark-orange: #f89808;
+  /* Additional Aesthetic Colors */
+  --primary: #4A90E2;
+  --secondary: #F5A6B5;
+  --background: #F7F9FC;
+  --accent: #A4E0A9;
 }
 
 body {
-  background-color: var(--dark-grey);
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  color: var(--dark-grey);
+  padding-bottom: 40px;
 }
 
 .title {
-  color: var(--light-grey);
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary);
   text-align: center;
   margin: 25px 0;
 }
 
+/* Product Grid Layout */
 #dessert-card-container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
 .dessert-card {
-  width: 300px;
+  background-color: var(--white);
   padding: 15px;
-  margin: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  background-color: #fff;
+  transition: transform 0.3s ease;
+}
+.dessert-card:hover {
+  transform: translateY(-5px);
 }
 
 .dessert-image {
   width: 100%;
-  height: 150px; /* Fixed height for all images */
-  object-fit: cover; /* Ensures the image covers the area without stretching */
+  height: 150px;
+  object-fit: cover;
   border-radius: 10px;
-  margin-bottom: 10px; /* Space between image and content */
+  margin-bottom: 10px;
 }
 
+/* Buttons */
 .btn {
-  display: block;
   cursor: pointer;
-  width: 100px;
+  width: 120px;
+  padding: 10px;
   color: var(--dark-grey);
-  background-color: var(--gold);
-  background-image: linear-gradient(var(--golden-yellow), var(--orange));
-  border-color: var(--gold);
-  border-width: 3px;
+  background-color: var(--accent);
+  border: none;
+  border-radius: 30px;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  margin: 10px auto;
 }
-
 .btn:hover {
-  background-image: linear-gradient(var(--yellow), var(--dark-orange));
+  background-color: var(--secondary);
+  transform: scale(1.05);
 }
 
+/* Cart Button */
 #cart-btn {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 20px;
+  right: 20px;
 }
 
-.add-to-cart-btn {
-  margin: 30px auto 10px;
-}
-
-/* Cart UI */
+/* Cart Container */
 #cart-container {
   position: fixed;
   top: 50%;
-  right: 0;
+  right: 20px;
   transform: translateY(-50%);
-  background-color: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--white);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  border-radius: 10px;
-  width: 300px;
-  display: none; /* Initially hidden */
-  max-height: 80vh; /* Prevent cart from growing beyond 80% of the viewport height */
-  overflow-y: auto; /* Enable scrolling when content exceeds max height */
+  border-radius: 15px;
+  width: 320px;
+  display: none;
+  max-height: 80vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
-
 #cart-container.show {
-  display: block; /* Show when toggled */
-  top: 12%;
-  right: 0;
+  display: block;
+  top: 50%;
   transform: translateY(-50%);
 }
 
-.product {
-  margin: 25px 0;
+/* Discount Code Section */
+#discount-container {
+  display: flex;
+  margin: 10px 0;
+}
+#discount-code {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--grey);
+  border-radius: 5px 0 0 5px;
+}
+#apply-discount-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--grey);
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  background-color: var(--accent);
+  color: var(--dark-grey);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#apply-discount-btn:hover {
+  background-color: var(--secondary);
 }
 
+/* Cart Product Item */
+.product {
+  margin: 15px 0;
+}
 .product-count {
-  display: inline-block;
+  font-weight: bold;
   margin-right: 10px;
 }
-
 .product-category {
   margin: 10px 0;
 }
 
-
+/* Toast Notification */
 .toast {
   position: fixed;
-  top: 0;
-  left: 0;
-  transform: translateY(0);
-  transform: translateX(200%);
-  background-color: var(--gold);
+  top: 10%;
+  right: 50%;
+  transform: translateX(50%);
+  background-color: var(--accent);
   color: var(--dark-grey);
   padding: 10px 20px;
   border-radius: 10px;
   font-size: 1rem;
   opacity: 0;
-  transition: opacity 0.5s;
+  transition: opacity 0.5s ease;
+  z-index: 1100;
 }
-
 .toast.show {
   opacity: 1;
 }
 
+/* Input Styling */
 .quantity-input {
   width: 50px;
   padding: 5px;
@@ -146,53 +180,37 @@ body {
   border: 2px solid var(--gold);
   border-radius: 5px;
 }
-@media (min-width: 768px) {
-  #dessert-card-container {
-    flex-direction: row;
-  }
 
-  .dessert-card {
-    flex: 1 0 21%;
-  }
-
-  #cart-container {
-    width: 300px;
-  }
+/* Footer */
+footer {
+  background-color: var(--dark-grey);
+  color: var(--white);
+  padding: 20px 0;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 40px;
+}
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+  margin: 0 10px;
+}
+footer a:hover {
+  text-decoration: underline;
 }
 
-/* Mobile-first styles */
+/* Responsive Styles */
 @media (max-width: 600px) {
-  .dessert-card {
-    width: 100%;
+  #dessert-card-container {
+    grid-template-columns: 1fr;
   }
-
-  .product {
-    width: 100%;
-  }
-
-  .cart-container {
-    padding: 10px;
-    max-width: 100%;
-  }
-
-  .cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .quantity-input {
-    width: 50px;
+  #cart-container {
+    width: 90%;
+    right: 5%;
   }
 }
-
-/* Tablet and larger screens */
-@media (min-width: 600px) {
-  .dessert-card {
-    width: 45%;
-  }
-  .cart-container {
-    max-width: 800px;
-    margin: 0 auto;
+@media (min-width: 600px) and (max-width: 768px) {
+  #dessert-card-container {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
