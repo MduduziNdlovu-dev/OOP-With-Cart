@@ -72,7 +72,7 @@ Welcome to the **Dessert Shopping Cart** – a cutting-edge web app where your s
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/dessert-shopping-cart.git
+   git clone https://github.com/MduduziNdlovu-dev/OOP-With-Cart.git
    cd dessert-shopping-cart
    ```
 
@@ -105,4 +105,4 @@ This Dessert Shopping Cart is more than just a project – it’s a journey of g
 
 --- 
 
-*Made with ❤️ and a dash of gamer spirit by [Your Name]*
+*Made with ❤️ and a dash of gamer spirit by Mduduzi Ndlovu AKA oLaggyRedBARo*
