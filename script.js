@@ -103,26 +103,29 @@ products.forEach(
 
 class ShoppingCart {
   constructor() {
-    this.items = [];
+    this.items = JSON.parase(localStorage.getItem("cartItems")) || [];
     this.total = 0;
     this.taxRate = 8.25;
+  }
+
+  saveCart(){
+    localStorage.setItem("cartItems", JSON.stringify(this.items));
   }
 
   removeItem(id) {
     let existingProduct = this.items.find((item) => item.id === id);
 
-    if (!existingProduct) return; // Item not in cart
+    if (!existingProduct) return; 
 
     if (existingProduct.quantity > 1) {
         existingProduct.quantity -= 1;
         document.getElementById(`product-count-for-id${id}`).textContent = `${existingProduct.quantity}x`;
     } else {
-        // Remove product completely
         this.items = this.items.filter((item) => item.id !== id);
         document.getElementById(`dessert${id}`).remove();
     }
 
-    // Update total count and price
+    this.saveCart();
     totalNumberOfItems.textContent = this.getCounts();
     this.calculateTotal();
 }
@@ -155,6 +158,7 @@ class ShoppingCart {
         });
     }
 
+    this.saveCart();
     totalNumberOfItems.textContent = this.getCounts();
     this.calculateTotal();
   }
@@ -194,6 +198,27 @@ class ShoppingCart {
 
     return this.total;
   }
+
+  restoreCartUI() {
+    this.items.forEach(({ id, name, price, quantity }) => {
+        productsContainer.innerHTML += `
+        <div id="dessert${id}" class="product">
+          <p>
+            <span class="product-count" id="product-count-for-id${id}">${quantity}x</span> ${name}
+          </p>
+          <p>$${price}</p>
+          <button class="btn remove-item-btn" data-id="${id}">Remove</button>
+        </div>
+        `;
+
+        document.querySelector(`#dessert${id} .remove-item-btn`).addEventListener("click", (event) => {
+            this.removeItem(Number(event.target.dataset.id));
+        });
+    });
+
+    totalNumberOfItems.textContent = this.getCounts();
+    this.calculateTotal();
+}
 };
 
 const cart = new ShoppingCart();
@@ -216,3 +241,5 @@ cartBtn.addEventListener("click", () => {
 });
 
 clearCartBtn.addEventListener("click", cart.clearCart.bind(cart));
+cart.restoreCartUI();
+
