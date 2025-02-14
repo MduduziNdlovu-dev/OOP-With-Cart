@@ -190,10 +190,6 @@ class ShoppingCart {
 }
 
 const cart = new ShoppingCart();
-
-
-
-
 clearCartBtn.addEventListener("click", () => cart.clearCart());
 
 cart.restoreCartUI();
@@ -210,5 +206,8 @@ cartBtn.addEventListener("click", () => {
     showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
     cartContainer.style.display = isCartShowing ? "block" : "none";
 });
+
+
+
 
 

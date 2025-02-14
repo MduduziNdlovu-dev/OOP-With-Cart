@@ -38,19 +38,14 @@ body {
 }
 
 .dessert-card {
-  background-color: var(--light-grey);
+  width: 300px;
   padding: 15px;
-  text-align: center;
-  border-radius: 15px;
   margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  min-height: 350px; /* Consistent height for all cards */
-  box-sizing: border-box;
-  overflow: hidden; /* Ensure content doesn't overflow */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #fff;
 }
 
 .dessert-image {
@@ -89,7 +84,7 @@ body {
 /* Cart UI */
 #cart-container {
   position: fixed;
-  top: 12%;
+  top: 50%;
   right: 0;
   transform: translateY(-50%);
   background-color: white;
@@ -98,6 +93,8 @@ body {
   border-radius: 10px;
   width: 300px;
   display: none; /* Initially hidden */
+  max-height: 80vh; /* Prevent cart from growing beyond 80% of the viewport height */
+  overflow-y: auto; /* Enable scrolling when content exceeds max height */
 }
 
 #cart-container.show {
@@ -120,19 +117,6 @@ body {
   margin: 10px 0;
 }
 
-@media (min-width: 768px) {
-  #dessert-card-container {
-    flex-direction: row;
-  }
-
-  .dessert-card {
-    flex: 1 0 21%;
-  }
-
-  #cart-container {
-    width: 300px;
-  }
-}
 
 .toast {
   position: fixed;
@@ -161,4 +145,54 @@ body {
   font-size: 1rem;
   border: 2px solid var(--gold);
   border-radius: 5px;
+}
+@media (min-width: 768px) {
+  #dessert-card-container {
+    flex-direction: row;
+  }
+
+  .dessert-card {
+    flex: 1 0 21%;
+  }
+
+  #cart-container {
+    width: 300px;
+  }
+}
+
+/* Mobile-first styles */
+@media (max-width: 600px) {
+  .dessert-card {
+    width: 100%;
+  }
+
+  .product {
+    width: 100%;
+  }
+
+  .cart-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .quantity-input {
+    width: 50px;
+  }
+}
+
+/* Tablet and larger screens */
+@media (min-width: 600px) {
+  .dessert-card {
+    width: 45%;
+  }
+  .cart-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }
