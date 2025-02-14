@@ -10,6 +10,8 @@ const cartTotal = document.getElementById("total");
 const showHideCartSpan = document.getElementById("show-hide-cart");
 let isCartShowing = false;
 
+const API_KEY = "bWoxJ9UM-DGVp28hCqLtCGBce8JSW1I7MoRlrlJuco8";
+
 const products = [
   { id: 1, name: "Vanilla Cupcakes (6 Pack)", price: 12.99, category: "Cupcake" },
   { id: 2, name: "French Macaron", price: 3.99, category: "Macaron" },
@@ -25,17 +27,43 @@ const products = [
   { id: 12, name: "Lemon Cupcakes (4 Pack)", price: 12.99, category: "Cupcake" },
 ];
 
-// Generate product cards
-products.forEach(({ name, id, price, category }) => {
-  dessertCards.innerHTML += `
-    <div class="dessert-card">
-      <h2>${name}</h2>
-      <p class="dessert-price">$${price}</p>
-      <p class="product-category">Category: ${category}</p>
-      <button id="${id}" class="btn add-to-cart-btn">Add to cart</button>
-    </div>
-  `;
+async function fetchProductImage(query) {
+  try {
+    const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&client_id=${API_KEY}&per_page=1`);
+    const data = await response.json();
+    return data.results.length > 0 ? data.results[0].urls.small : "placeholder.jpg";
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return "placeholder.jpg";
+  }
+}
+
+async function generateProductCards() {
+  for (const { name, id, price, category } of products) {
+    const imageUrl = await fetchProductImage(name);
+    dessertCards.innerHTML += `
+      <div class="dessert-card">
+        <img src="${imageUrl}" alt="${name}" class="dessert-image">
+        <h2>${name}</h2>
+        <p class="dessert-price">$${price}</p>
+        <p class="product-category">Category: ${category}</p>
+        <button id="${id}" class="btn add-to-cart-btn">Add to cart</button>
+      </div>
+    `;
+  }
+
+  const addToCartBtns = document.getElementsByClassName("add-to-cart-btn");
+
+[...addToCartBtns].forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    cart.addItem(Number(event.target.id), products);
+    totalNumberOfItems.textContent = cart.getCounts();
+    cart.calculateTotal();
+  });
 });
+}
+
+generateProductCards();
 
 class ShoppingCart {
   constructor() {
@@ -130,7 +158,6 @@ class ShoppingCart {
     cartTaxes.textContent = `$${tax.toFixed(2)}`;
     cartTotal.textContent = `$${this.total.toFixed(2)}`;
   }
-
   restoreCartUI() {
     this.items.forEach(({ id, name, price, quantity }) => {
       productsContainer.innerHTML += `
@@ -152,22 +179,18 @@ class ShoppingCart {
 }
 
 const cart = new ShoppingCart();
-const addToCartBtns = document.getElementsByClassName("add-to-cart-btn");
 
-[...addToCartBtns].forEach((btn) => {
-  btn.addEventListener("click", (event) => {
-    cart.addItem(Number(event.target.id), products);
-    totalNumberOfItems.textContent = cart.getCounts();
-    cart.calculateTotal();
-  });
-});
 
-cartBtn.addEventListener("click", () => {
-  isCartShowing = !isCartShowing;
-  showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
-  cartContainer.style.display = isCartShowing ? "block" : "none";
-});
+
 
 clearCartBtn.addEventListener("click", () => cart.clearCart());
 
 cart.restoreCartUI();
+
+cartBtn.addEventListener("click", () => {
+    isCartShowing = !isCartShowing;
+    showHideCartSpan.textContent = isCartShowing ? "Hide" : "Show";
+    cartContainer.style.display = isCartShowing ? "block" : "none";
+});
+
+
